@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">04_geoquiz</string>
+    <string name="app_name">05_geoquiz</string>
     <string name="question_australia">Canberra is the capital of Australia.</string>
     <string name="true_button">True</string>
     <string name="false_button">False</string>
@@ -13,4 +13,9 @@
     <string name="question_americas">The Amazon River is the longest river in the Americas.</string>
     <string name="question_asia">Lake Baikal is the world\'s oldest and deepest freshwater lake.</string>
 
+    <string name="warning_text">Are you sure you want to do this?</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">Cheat!</string>
+    <string name="judgment_toast">Cheating is wrong.</string>
+    <string name="title_activity_cheat">CheatActivity</string>
 </resources>

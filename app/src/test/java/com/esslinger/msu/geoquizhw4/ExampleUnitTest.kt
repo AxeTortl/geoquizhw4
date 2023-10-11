@@ -1,4 +1,4 @@
-package com.esslinger.msu.geoquizhw4
+package com.esslinger.msu.geoquizhw5
 
 import org.junit.Test
 

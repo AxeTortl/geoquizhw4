@@ -1,21 +1,16 @@
-package com.esslinger.msu.geoquizhw4
+package com.esslinger.msu.geoquizhw5
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 
 private  const val TAG = "QuizViewModel"
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
+const val IS_CHEATER_KEY = "IS_CHEATER_KEY"
 
 class QuizViewModel(private val savedStateHandle:SavedStateHandle):ViewModel() {
-    /*init{
-        Log.d(TAG, " QuizViewModel instance created")
-
-    }
-    override fun onCleared(){
-        super.onCleared()
-        Log.d(TAG, "QuizViewModel instance about to be destroyed")
-    }*/
+    fun getCurrentQuestionIndex(): Int {
+        return currentIndex
+    } //added this to allow main activity access
     private val questionBank = mutableListOf(
         Question(R.string.question_australia, answer = true),
         Question(R.string.question_oceans, answer = true),
@@ -32,6 +27,13 @@ class QuizViewModel(private val savedStateHandle:SavedStateHandle):ViewModel() {
         get() = questionBank[currentIndex].answer
     val currentQuestionText: Int
         get() = questionBank[currentIndex].textResId
+
+    fun isCheaterForQuestion(index: Int): Boolean {
+        return savedStateHandle.get(IS_CHEATER_KEY + index) ?: false
+    }
+    fun setCheaterForQuestion(index: Int, isCheater: Boolean) {
+        savedStateHandle.set(IS_CHEATER_KEY + index, isCheater)
+    }
 
     fun movetoNext(){
         currentIndex = (currentIndex + 1) % questionBank.size

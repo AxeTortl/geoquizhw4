@@ -1,12 +1,16 @@
-package com.esslinger.msu.geoquizhw4
+package com.esslinger.msu.geoquizhw5
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import com.esslinger.msu.geoquizhw4.databinding.ActivityMainBinding
+import com.esslinger.msu.geoquizhw5.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
@@ -17,15 +21,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding :ActivityMainBinding
     private val quizViewModel:QuizViewModel by viewModels()
 
-   /* private val questionBank = mutableListOf(
-        Question(R.string.question_australia, answer = true),
-        Question(R.string.question_oceans, answer = true),
-        Question(R.string.question_mideast, answer = false),
-        Question(R.string.question_africa, answer = false),
-        Question(R.string.question_americas, answer = true),
-        Question(R.string.question_asia,answer = true)
-    )
-    private var currentIndex = 0*/
+    private val cheatLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+
+    ) { result->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val currentQuestionIndex = quizViewModel.getCurrentQuestionIndex()
+            val isAnswerShown = result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            quizViewModel.setCheaterForQuestion(currentQuestionIndex, isAnswerShown)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +47,15 @@ class MainActivity : AppCompatActivity() {
             checkAnswer(false)
         }
 
+        binding.cheatButton.setOnClickListener {
+           // val intent = Intent (this, CheatActivity::class.java)
+            val answerIsTrue = quizViewModel.currentQuestionAnswer
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            //startActivity(intent)
+            cheatLauncher.launch(intent)
+        }
 
         binding.nextButton.setOnClickListener {
-            //currentIndex = (currentIndex + 1) % questionBank.size
             quizViewModel.movetoNext()
 
             updateQuestion()
@@ -54,24 +65,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateQuestion() {
-        //val questionTextResId = questionBank[currentIndex].textResId
         val questionTextResId = quizViewModel.currentQuestionText
         binding.questionTextview.setText(questionTextResId)
 
     }
     private fun checkAnswer(userAnswer: Boolean) {
-        //val correctAnswer = questionBank[currentIndex].answer
-        val correctAnswer = quizViewModel.currentQuestionAnswer
+        val currentQuestionIndex = quizViewModel.getCurrentQuestionIndex()
+        val currentQuestionAnswer = quizViewModel.currentQuestionAnswer
 
-        val messageResId = if (userAnswer == correctAnswer) {
-            R.string.correct_toast
+        if (quizViewModel.isCheaterForQuestion(currentQuestionIndex)) {
+            Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show()
         } else {
-            R.string.incorrect_toast
+            val messageResId = when {
+                userAnswer == currentQuestionAnswer -> R.string.correct_toast
+                else -> R.string.incorrect_toast
+            }
+            Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show()
         }
+    } //reference: chat GPT
 
-        Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show()
-
-    }
     override fun onStart(){
         super.onStart()
         Log.d(TAG, "onStart() called")

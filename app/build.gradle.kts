@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.esslinger.msu.geoquizhw4"
+    namespace = "com.esslinger.msu.geoquizhw5"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.esslinger.msu.geoquizhw4"
+        applicationId = "com.esslinger.msu.geoquizhw5"
         minSdk = 33
         targetSdk = 33
         versionCode = 1
@@ -46,6 +46,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.4")
     implementation("androidx.activity:activity-ktx:1.4.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
